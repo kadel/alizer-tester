@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/kadel/devfile-utils/registry"
+	"github.com/redhat-developer/alizer/go/pkg/apis/model"
 	"github.com/redhat-developer/alizer/go/pkg/apis/recognizer"
 )
 
@@ -40,7 +41,7 @@ func main() {
 	}
 
 	for _, lang := range languages {
-		fmt.Printf("%+v\n", lang)
+		fmt.Printf("  %+v\n", lang)
 	}
 
 	fmt.Println()
@@ -48,9 +49,9 @@ func main() {
 
 	devfileRegistry := registry.NewIndex(DevfileRegistryUrl)
 
-	types := []recognizer.DevFileType{}
+	types := []model.DevFileType{}
 	for _, d := range devfileRegistry.GetIndex() {
-		types = append(types, recognizer.DevFileType{
+		types = append(types, model.DevFileType{
 			Name:        d.Name,
 			ProjectType: d.ProjectType,
 			Language:    d.Language,
@@ -63,7 +64,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("%+v\n", detectedType)
+	fmt.Printf("  %+v\n", types[detectedType])
 
 	fmt.Println()
 	fmt.Printf("# Runing recognizer.DetectComponents(%q)\n", *path)
@@ -73,6 +74,26 @@ func main() {
 	}
 
 	for _, component := range components {
-		fmt.Printf("%+v\n", component)
+		fmt.Printf("  %s %s\n", component.Name, component.Path)
+		for _, lang := range component.Languages {
+			fmt.Printf("  %+v\n", lang)
+		}
+		fmt.Println()
 	}
+
+	fmt.Println()
+	fmt.Printf("# Runing recognizer.DetectComponentsInRoot(%q)\n", *path)
+	components, err = recognizer.DetectComponentsInRoot(*path)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, component := range components {
+		fmt.Printf("  Name: %s Path: %s\n", component.Name, component.Path)
+		for _, lang := range component.Languages {
+			fmt.Printf("    %+v\n", lang)
+		}
+		fmt.Println()
+	}
+
 }
