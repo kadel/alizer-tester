@@ -82,7 +82,7 @@ func main() {
 	}
 
 	fmt.Println()
-	fmt.Printf("# Runing recognizer.DetectComponentsInRoot(%q)\n", *path)
+	fmt.Printf("# Running recognizer.DetectComponentsInRoot(%q)\n", *path)
 	components, err = recognizer.DetectComponentsInRoot(*path)
 	if err != nil {
 		panic(err)
